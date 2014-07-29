@@ -1,10 +1,10 @@
 {
-  "name": "css-flip",
+  "name": "css-flip-auto",
   "version": "0.5.0",
   "description": "A CSS BiDi flipper.",
   "main": "index.js",
   "bin": {
-    "css-flip": "bin/css-flip"
+    "cssrtl": "bin/css-flip"
   },
   "files": [
     "index.js",
@@ -32,9 +32,9 @@
     "bidi",
     "flip"
   ],
-  "author": "Brett Stimmerman <bretts@twitter.com> (http://twitter.com/bretts)",
+  "author": "Junyue Cao",
   "repository": {
     "type": "git",
-    "url": "https://github.com/twitter/css-flip.git"
+    "url": "https://github.com/junyuecao/css-flip.git"
   }
 }
