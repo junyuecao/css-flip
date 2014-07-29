@@ -81,8 +81,8 @@ function flipStdin(options, cb) {
 
 function flipLtrFolder(options, cb){
     var files;
-    var dir = path.join(__dirname , 'ltr');
-    var rtlDir = path.join(__dirname, 'rtl');
+    var dir = path.join('./' , 'ltr');
+    var rtlDir = path.join('./', 'rtl');
     if(program.reverse){
         var tmp = rtlDir;
         rtlDir = dir;

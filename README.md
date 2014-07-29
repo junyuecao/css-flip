@@ -142,17 +142,20 @@ p {
 ## CLI
 
 The CLI can be used globally or locally in a package.
+下面的命令会从当前目录中找到ltr目录,翻转里面的css文件，生成rtl目录，并放入rtl文件夹中
+```
+cssrtl
+```
 
 View available options:
-
 ```
-css-flip --help
+cssrtl --help
 ```
 
 Example use:
 
 ```sh
-css-flip path/to/file.css > path/to/file.rtl.css
+cssrtl path/to/file.css > path/to/file.rtl.css
 ```
 
 ## Development
