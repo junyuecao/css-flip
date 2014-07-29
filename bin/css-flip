@@ -6,6 +6,8 @@ var fs = require('fs');
 var path  = require('path');
 var program = require('commander');
 var flip = require('..');
+var dir = path.join('./' , 'ltr');
+var rtlDir = path.join('./', 'rtl');
 
 program
   .usage('[options] <file ...>\n\n  css-flip is a CSS BiDi flipper.')
@@ -42,6 +44,9 @@ function done(css,filename) {
     return fs.writeFileSync(program.output, css);
   }
     if(filename){
+        if(!fs.existsSync(rtlDir)){
+            fs.mkdirSync(rtlDir);
+        }
         console.log(filename);
         fs.writeFileSync(filename,css);
     }else {
@@ -81,8 +86,7 @@ function flipStdin(options, cb) {
 
 function flipLtrFolder(options, cb){
     var files;
-    var dir = path.join('./' , 'ltr');
-    var rtlDir = path.join('./', 'rtl');
+
     if(program.reverse){
         var tmp = rtlDir;
         rtlDir = dir;
@@ -107,7 +111,7 @@ function flipLtrFolder(options, cb){
             });
         }
     }catch (e){
-        console.log('没有rtl文件夹');
+        console.log(e);
         return;
     }
 }

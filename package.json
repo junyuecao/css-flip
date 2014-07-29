@@ -1,6 +1,6 @@
 {
   "name": "css-flip-auto",
-  "version": "0.5.0",
+  "version": "0.5.2",
   "description": "A CSS BiDi flipper.",
   "main": "index.js",
   "bin": {
