@@ -3,6 +3,7 @@
 /* Copyright 2014 Twitter, Inc. and other contributors; Licensed MIT */
 
 var fs = require('fs');
+var path  = require('path');
 var program = require('commander');
 var flip = require('..');
 
@@ -11,11 +12,16 @@ program
   .version(require('../package.json').version)
   .option('-c, --compress', 'compress whitespace')
   .option('-o, --output <file>', 'specify an output file')
+
+  .option('-r, --reverse', '从rtl转为ltr.')
+  .option('-f, --suffix', '添加后缀:转为xxx-rtl.css')
+  
   .option('-, --stdin', 'read from stdin')
   .parse(process.argv);
 
-var options = { compress: program.compress };
-
+var options = {
+ compress: program.compress
+};
 if (program.stdin) {
   flipStdin(options, done);
 }
@@ -23,23 +29,28 @@ else if (program.args.length) {
   flipFiles(program.args, options, done);
 }
 else {
-  program.help();
+//  program.help();
+  flipLtrFolder( options,done);
 }
 
 
 // -- Functions --
 
 // Writes the given CSS to disk or stdout.
-function done(css) {
+function done(css,filename) {
   if (program.output) {
     return fs.writeFileSync(program.output, css);
   }
-
-  process.stdout.write(css);
+    if(filename){
+        console.log(filename);
+        fs.writeFileSync(filename,css);
+    }else {
+        process.stdout.write(css);
+    }
 }
 
 // Flips each file and passes the concatenated result to the callback.
-function flipFiles(files, options, cb) {
+function flipFiles(files, options, cb, filename) {
   var css = files.reduce(function (acc, file) {
     if (!fs.existsSync(file)) {
       return acc;
@@ -48,7 +59,7 @@ function flipFiles(files, options, cb) {
     return acc.concat(flip(fs.readFileSync(file, 'utf8'), options));
   }, []);
 
-  cb(css.join('\n'));
+  cb(css.join('\n'),filename);
 }
 
 // Collects stdin and passes the flipped result to the callback.
@@ -66,4 +77,37 @@ function flipStdin(options, cb) {
 
   stdin.setEncoding('utf8');
   stdin.resume();
+}
+
+function flipLtrFolder(options, cb){
+    var files;
+    var dir = path.join(__dirname , 'ltr');
+    var rtlDir = path.join(__dirname, 'rtl');
+    if(program.reverse){
+        var tmp = rtlDir;
+        rtlDir = dir;
+        dir = tmp;
+    }
+
+    try{
+        if(fs.lstatSync(dir).isDirectory()){
+            files = fs.readdirSync(dir);
+            files.forEach(function(f,i){
+                var targetFile;
+                if(!program.reverse){
+                    targetFile = f.replace(/\.css$/i,'-rtl.css');
+                }else{
+                    targetFile = f.replace(/-rtl.css$/i,'.css');
+                }
+
+                var file = [path.join(dir,f)];
+                targetFile = path.join(rtlDir, targetFile);
+
+                flipFiles(file, options, cb, targetFile);
+            });
+        }
+    }catch (e){
+        console.log('没有rtl文件夹');
+        return;
+    }
 }
